@@ -43,7 +43,13 @@ public class IRepositoryImpl implements IRepository{
     @Override
     public Usuario buscarLogou(String logou) {
         String query = "FROM Usuario WHERE login = :login ";
-        Usuario sLogin = (Usuario) entityManager.createQuery(query).setParameter("login",logou).getSingleResult();
-        return sLogin;
+        Usuario usu = new Usuario();
+        List <Usuario> lista = entityManager.createQuery(query).
+                setParameter("login",logou).getResultList();
+        if(lista.size() > 0){
+            usu = lista.get(0);
+            return usu;
+        }
+        return null;
     }
 }

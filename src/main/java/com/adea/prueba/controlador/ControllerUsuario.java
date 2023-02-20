@@ -58,19 +58,22 @@ public class ControllerUsuario {
     @PostMapping("/validaUsuario")
     public String validarUsuario(@ModelAttribute("login") Login lgn) {
         Usuario usu = iRepository.buscarLogou(lgn.getLogin());
-        Date myDate = new Date();
-        byte[] decodedBytes = Base64.getDecoder().decode(usu.getPassword());
-        String usudecodificado = new String(decodedBytes);
-        if (usu.getLogin().equals(lgn.getLogin()) && lgn.getPassword().equals(usudecodificado)){
-            if(myDate.before(usu.getFechaVigencia())){
-                return "menu";
+        if(usu != null){
+            Date myDate = new Date();
+            byte[] decodedBytes = Base64.getDecoder().decode(usu.getPassword());
+            String usudecodificado = new String(decodedBytes);
+            if (usu.getLogin().equals(lgn.getLogin()) && lgn.getPassword().equals(usudecodificado)){
+                if(myDate.before(usu.getFechaVigencia())){
+                    return "menu";
+                }else{
+                    return "redirect:/home/inicio?fecha";
+                }
             }else{
-                return "redirect:/home/inicio?fecha";
+                return "redirect:/home/inicio?incorrecto";
             }
         }else{
             return "redirect:/home/inicio?incorrecto";
         }
-
     }
 
     @PostMapping("/registrar")
